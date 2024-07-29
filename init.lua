@@ -260,6 +260,7 @@ require('lazy').setup({
       end,
     },
   },
+  { 'dasupradyumna/midnight.nvim', lazy = false, priority = 1000 },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -918,6 +919,8 @@ require('lazy').setup({
     },
   },
 })
+
+vim.cmd.colorscheme 'midnight'
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
