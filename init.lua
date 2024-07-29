@@ -252,6 +252,14 @@ require('lazy').setup({
       },
     },
   },
+  {
+    {
+      'supermaven-inc/supermaven-nvim',
+      config = function()
+        require('supermaven-nvim').setup {}
+      end,
+    },
+  },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
