@@ -875,17 +875,13 @@ require('lazy').setup({
       --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
     end,
   },
-  { -- nvim-ufo
+  {
     'kevinhwang91/nvim-ufo',
-    dependencies = {
-      'kevinhwang91/promise-async',
+    dependencies = { -- Used for async loading of plugins
+      'kevinhwang91/promise-async', -- Used for async loading of plugins
     },
     config = function()
-      require('ufo').setup {
-        provider_selector = function(bufnr, filetype, buftype)
-          return { 'lsp', 'indent' }
-        end,
-      }
+      require 'kickstart.plugins.nvim-ufo'
     end,
   },
 
