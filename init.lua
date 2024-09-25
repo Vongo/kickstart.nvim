@@ -89,6 +89,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
+vim.o.tabstop = 4
 
 -- Set to true if you have a Nerd Font installed and selected in the terminal
 vim.g.have_nerd_font = false
@@ -912,6 +913,90 @@ require('lazy').setup({
       require('lsp_signature').setup(opts)
     end,
   },
+  {
+    'jake-stewart/multicursor.nvim',
+    branch = '1.0',
+    config = function()
+      local mc = require 'multicursor-nvim'
+
+      mc.setup()
+
+      -- Add cursors above/below the main cursor.
+      vim.keymap.set({ 'n', 'v' }, '<c-up>', function()
+        mc.addCursor 'k'
+      end)
+      vim.keymap.set({ 'n', 'v' }, '<c-down>', function()
+        mc.addCursor 'j'
+      end)
+
+      -- Add a cursor and jump to the next word under cursor.
+      vim.keymap.set({ 'n', 'v' }, '<c-d>', function()
+        mc.addCursor '*'
+      end)
+
+      -- Jump to the next word under cursor but do not add a cursor.
+      vim.keymap.set({ 'n', 'v' }, '<c-s>', function()
+        mc.skipCursor '*'
+      end)
+
+      -- Rotate the main cursor.
+      vim.keymap.set({ 'n', 'v' }, '<c-left>', mc.nextCursor)
+      vim.keymap.set({ 'n', 'v' }, '<c-right>', mc.prevCursor)
+
+      -- Delete the main cursor.
+      vim.keymap.set({ 'n', 'v' }, '<leader>x', mc.deleteCursor)
+
+      -- Add and remove cursors with control + left click.
+      vim.keymap.set('n', '<c-leftmouse>', mc.handleMouse)
+
+      vim.keymap.set({ 'n', 'v' }, '<c-q>', function()
+        if mc.cursorsEnabled() then
+          -- Stop other cursors from moving.
+          -- This allows you to reposition the main cursor.
+          mc.disableCursors()
+        else
+          mc.addCursor()
+        end
+      end)
+
+      vim.keymap.set('n', '<esc>', function()
+        if not mc.cursorsEnabled() then
+          mc.enableCursors()
+        elseif mc.hasCursors() then
+          mc.clearCursors()
+        else
+          -- Default <esc> handler.
+        end
+      end)
+
+      -- Align cursor columns.
+      vim.keymap.set('n', '<leader>a', mc.alignCursors)
+
+      -- Split visual selections by regex.
+      vim.keymap.set('v', 'S', mc.splitCursors)
+
+      -- Append/insert for each line of visual selections.
+      vim.keymap.set('v', 'I', mc.insertVisual)
+      vim.keymap.set('v', 'A', mc.appendVisual)
+
+      -- match new cursors within visual selections by regex.
+      vim.keymap.set('v', 'M', mc.matchCursors)
+
+      -- Rotate visual selection contents.
+      vim.keymap.set('v', '<leader>t', function()
+        mc.transposeCursors(1)
+      end)
+      vim.keymap.set('v', '<leader>T', function()
+        mc.transposeCursors(-1)
+      end)
+
+      -- Customize how cursors look.
+      vim.api.nvim_set_hl(0, 'MultiCursorCursor', { link = 'Cursor' })
+      vim.api.nvim_set_hl(0, 'MultiCursorVisual', { link = 'Visual' })
+      vim.api.nvim_set_hl(0, 'MultiCursorDisabledCursor', { link = 'Visual' })
+      vim.api.nvim_set_hl(0, 'MultiCursorDisabledVisual', { link = 'Visual' })
+    end,
+  },
 
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -958,9 +1043,6 @@ require('lazy').setup({
 })
 
 vim.cmd.colorscheme 'midnight'
-
-vim.g.mapleader = ' '
-vim.opt.tabstop = 4
 
 vim.api.nvim_set_keymap('n', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
