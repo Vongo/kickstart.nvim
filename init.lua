@@ -116,7 +116,7 @@ vim.opt.showmode = false
 -- Sync clipboard between OS and Neovim.
 --  Remove this option if you want your OS clipboard to remain independent.
 --  See `:help 'clipboard'`
-vim.opt.clipboard = 'unnamedplus'
+-- vim.opt.clipboard+='unnamedplus'
 
 -- Enable break indent
 vim.opt.breakindent = true
@@ -889,14 +889,14 @@ require('lazy').setup({
     opts = {
       jump = { auto_jump = true },
     },
-    -- stylua: ignore
-    keys = {
-      { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
-      { "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
-      { "r",     mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
-      { "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-      { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
-    },
+        -- stylua: ignore
+        keys = {
+            { "s",     mode = { "n", "x", "o" }, function() require("flash").jump() end,              desc = "Flash" },
+            { "S",     mode = { "n", "x", "o" }, function() require("flash").treesitter() end,        desc = "Flash Treesitter" },
+            { "r",     mode = "o",               function() require("flash").remote() end,            desc = "Remote Flash" },
+            { "R",     mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+            { "<c-s>", mode = { "c" },           function() require("flash").toggle() end,            desc = "Toggle Flash Search" },
+        },
   },
 
   {
@@ -1008,14 +1008,6 @@ require('lazy').setup({
     'feline-nvim/feline.nvim',
     config = function()
       require('feline').setup {}
-    end,
-  },
-  {
-    'ojroques/vim-oscyank',
-    branch = 'main',
-    keys = { { '<C-c>', ':OSCYankVisual<CR>', desc = 'Copy to clipboard', mode = 'v' } },
-    init = function()
-      vim.g.oscyank_term = 'default'
     end,
   },
   {
