@@ -1103,7 +1103,18 @@ require('lazy').setup({
       }
     end,
   },
-
+  {
+    'mfussenegger/nvim-dap',
+  },
+  {
+    'leoluz/nvim-dap-go',
+  },
+  {
+    'rcarriga/nvim-dap-ui',
+  },
+  {
+    'nvim-neotest/nvim-nio',
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -1228,3 +1239,5 @@ vim.diagnostic.config {
   underline = false,
   severity_sort = true,
 }
+
+require 'custom.plugins.go_debug'
