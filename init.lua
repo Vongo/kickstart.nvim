@@ -1165,6 +1165,9 @@ vim.cmd.colorscheme 'solarized-osaka'
 vim.api.nvim_set_keymap('n', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 
+vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
+
 local harpoon = require 'harpoon'
 
 harpoon:setup()
