@@ -653,9 +653,9 @@ require('lazy').setup({
         -- clangd = {},
         -- gopls = {},
         -- pyright = {},
-        r_language_server = {
-          cmd = { 'R', '--slave', '-e', 'languageserver::run()' },
-        },
+        -- r_language_server = {
+        --   cmd = { 'R', '--slave', '-e', 'languageserver::run()' },
+        -- },
         -- csvls = {},
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
@@ -1227,7 +1227,7 @@ end, { desc = 'Open harpoon window' })
 require('lsp-format').setup {}
 require('lspconfig').gopls.setup { on_attach = require('lsp-format').on_attach }
 -- R
-require('lspconfig').r_language_server.setup { on_attach = require('lsp-format').on_attach }
+-- require('lspconfig').r_language_server.setup { on_attach = require('lsp-format').on_attach }
 -- lua
 require('lspconfig').lua_ls.setup { on_attach = require('lsp-format').on_attach }
 -- python
