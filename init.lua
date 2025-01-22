@@ -302,44 +302,44 @@ require('lazy').setup({
       }
     end,
   },
-  {
-    'nvimdev/dashboard-nvim',
-    event = 'VimEnter',
-    config = function()
-      require('dashboard').setup {
-        theme = 'hyper',
-        config = {
-          week_header = {
-            enable = true,
-          },
-          shortcut = {
-            { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
-            {
-              icon = ' ',
-              icon_hl = '@variable',
-              desc = 'Files',
-              group = 'Label',
-              action = 'Telescope find_files',
-              key = 'f',
-            },
-            {
-              desc = ' Apps',
-              group = 'DiagnosticHint',
-              action = 'Telescope app',
-              key = 'a',
-            },
-            {
-              desc = ' dotfiles',
-              group = 'Number',
-              action = 'Telescope dotfiles',
-              key = 'd',
-            },
-          },
-        },
-      }
-    end,
-    dependencies = { { 'nvim-tree/nvim-web-devicons' } },
-  },
+  -- {
+  --   'nvimdev/dashboard-nvim',
+  --   event = 'VimEnter',
+  --   config = function()
+  --     require('dashboard').setup {
+  --       theme = 'hyper',
+  --       config = {
+  --         week_header = {
+  --           enable = true,
+  --         },
+  --         shortcut = {
+  --           { desc = '󰊳 Update', group = '@property', action = 'Lazy update', key = 'u' },
+  --           {
+  --             icon = ' ',
+  --             icon_hl = '@variable',
+  --             desc = 'Files',
+  --             group = 'Label',
+  --             action = 'Telescope find_files',
+  --             key = 'f',
+  --           },
+  --           {
+  --             desc = ' Apps',
+  --             group = 'DiagnosticHint',
+  --             action = 'Telescope app',
+  --             key = 'a',
+  --           },
+  --           {
+  --             desc = ' dotfiles',
+  --             group = 'Number',
+  --             action = 'Telescope dotfiles',
+  --             key = 'd',
+  --           },
+  --         },
+  --       },
+  --     }
+  --   end,
+  --   dependencies = { { 'nvim-tree/nvim-web-devicons' } },
+  -- },
 
   -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
@@ -1068,39 +1068,269 @@ require('lazy').setup({
       require('feline').setup {}
     end,
   },
+  -- {
+  --   'folke/noice.nvim',
+  --   event = 'VeryLazy',
+  --   dependencies = {
+  --     -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+  --     'MunifTanjim/nui.nvim',
+  --     -- OPTIONAL:
+  --     --   `nvim-notify` is only needed, if you want to use the notification view.
+  --     --   If not available, we use `mini` as the fallback
+  --     'rcarriga/nvim-notify',
+  --   },
+  --   config = function()
+  --     require('noice').setup {
+  --       lsp = {
+  --         signature = {
+  --           enabled = false, -- disable signature help, it is on by default
+  --         },
+  --         -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+  --         override = {
+  --           ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
+  --           ['vim.lsp.util.stylize_markdown'] = true,
+  --           ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
+  --         },
+  --       },
+  --       -- you can enable a preset for easier configuration
+  --       presets = {
+  --         bottom_search = true, -- use a classic bottom cmdline for search
+  --         command_palette = true, -- position the cmdline and popupmenu together
+  --         long_message_to_split = true, -- long messages will be sent to a split
+  --         inc_rename = false, -- enables an input dialog for inc-rename.nvim
+  --         lsp_doc_border = false, -- add a border to hover docs and signature help
+  --       },
+  --     }
+  --   end,
+  -- },
   {
-    'folke/noice.nvim',
-    event = 'VeryLazy',
-    dependencies = {
-      -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
-      'MunifTanjim/nui.nvim',
-      -- OPTIONAL:
-      --   `nvim-notify` is only needed, if you want to use the notification view.
-      --   If not available, we use `mini` as the fallback
-      'rcarriga/nvim-notify',
+    'folke/snacks.nvim',
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
+    opts = {
+      bigfile = { enabled = true },
+      dashboard = {
+        enabled = true,
+        sections = {
+          {
+            section = 'terminal',
+            cmd = 'chafa ~/Pictures/wallpapers/street.jpg --format symbols --symbols vhalf --size 60x17 --stretch; sleep .1',
+            height = 17,
+            padding = 1,
+          },
+          -- {
+          --   pane = 2,
+          --   section = 'terminal',
+          --   cmd = 'colorscript -e square',
+          --   height = 5,
+          --   padding = 1,
+          -- },
+          -- { section = 'keys', gap = 1, padding = 1 },
+          { pane = 2, icon = ' ', title = 'Recent Files', section = 'recent_files', indent = 2, padding = 1 },
+          { pane = 2, icon = ' ', title = 'Projects', section = 'projects', indent = 2, padding = 1 },
+          {
+            pane = 2,
+            icon = ' ',
+            title = 'Git Status',
+            section = 'terminal',
+            enabled = function()
+              return Snacks.git.get_root() ~= nil
+            end,
+            cmd = 'git status --short --branch --renames',
+            height = 5,
+            padding = 1,
+            ttl = 5 * 60,
+            indent = 3,
+          },
+          { section = 'startup' },
+        },
+      },
+      indent = { enabled = true },
+      input = { enabled = true },
+      notifier = {
+        enabled = true,
+        timeout = 3000,
+      },
+      quickfile = { enabled = true },
+      scroll = { enabled = true },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+      styles = {
+        notification = {
+          -- wo = { wrap = true } -- Wrap notifications
+        },
+      },
     },
-    config = function()
-      require('noice').setup {
-        lsp = {
-          signature = {
-            enabled = false, -- disable signature help, it is on by default
-          },
-          -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
-          override = {
-            ['vim.lsp.util.convert_input_to_markdown_lines'] = true,
-            ['vim.lsp.util.stylize_markdown'] = true,
-            ['cmp.entry.get_documentation'] = true, -- requires hrsh7th/nvim-cmp
-          },
-        },
-        -- you can enable a preset for easier configuration
-        presets = {
-          bottom_search = true, -- use a classic bottom cmdline for search
-          command_palette = true, -- position the cmdline and popupmenu together
-          long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false, -- enables an input dialog for inc-rename.nvim
-          lsp_doc_border = false, -- add a border to hover docs and signature help
-        },
-      }
+    keys = {
+      {
+        '<leader>z',
+        function()
+          Snacks.zen()
+        end,
+        desc = 'Toggle Zen Mode',
+      },
+      {
+        '<leader>Z',
+        function()
+          Snacks.zen.zoom()
+        end,
+        desc = 'Toggle Zoom',
+      },
+      {
+        '<leader>.',
+        function()
+          Snacks.scratch()
+        end,
+        desc = 'Toggle Scratch Buffer',
+      },
+      {
+        '<leader>S',
+        function()
+          Snacks.scratch.select()
+        end,
+        desc = 'Select Scratch Buffer',
+      },
+      {
+        '<leader>n',
+        function()
+          Snacks.notifier.show_history()
+        end,
+        desc = 'Notification History',
+      },
+      {
+        '<leader>bd',
+        function()
+          Snacks.bufdelete()
+        end,
+        desc = 'Delete Buffer',
+      },
+      {
+        '<leader>cR',
+        function()
+          Snacks.rename.rename_file()
+        end,
+        desc = 'Rename File',
+      },
+      {
+        '<leader>gB',
+        function()
+          Snacks.gitbrowse()
+        end,
+        desc = 'Git Browse',
+        mode = { 'n', 'v' },
+      },
+      {
+        '<leader>gb',
+        function()
+          Snacks.git.blame_line()
+        end,
+        desc = 'Git Blame Line',
+      },
+      {
+        '<leader>gf',
+        function()
+          Snacks.lazygit.log_file()
+        end,
+        desc = 'Lazygit Current File History',
+      },
+      {
+        '<leader>gg',
+        function()
+          Snacks.lazygit()
+        end,
+        desc = 'Lazygit',
+      },
+      {
+        '<leader>gl',
+        function()
+          Snacks.lazygit.log()
+        end,
+        desc = 'Lazygit Log (cwd)',
+      },
+      {
+        '<leader>un',
+        function()
+          Snacks.notifier.hide()
+        end,
+        desc = 'Dismiss All Notifications',
+      },
+      {
+        '<c-/>',
+        function()
+          Snacks.terminal()
+        end,
+        desc = 'Toggle Terminal',
+      },
+      {
+        '<c-_>',
+        function()
+          Snacks.terminal()
+        end,
+        desc = 'which_key_ignore',
+      },
+      {
+        ']]',
+        function()
+          Snacks.words.jump(vim.v.count1)
+        end,
+        desc = 'Next Reference',
+        mode = { 'n', 't' },
+      },
+      {
+        '[[',
+        function()
+          Snacks.words.jump(-vim.v.count1)
+        end,
+        desc = 'Prev Reference',
+        mode = { 'n', 't' },
+      },
+      {
+        '<leader>N',
+        desc = 'Neovim News',
+        function()
+          Snacks.win {
+            file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],
+            width = 0.6,
+            height = 0.6,
+            wo = {
+              spell = false,
+              wrap = false,
+              signcolumn = 'yes',
+              statuscolumn = ' ',
+              conceallevel = 3,
+            },
+          }
+        end,
+      },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'VeryLazy',
+        callback = function()
+          -- Setup some globals for debugging (lazy-loaded)
+          _G.dd = function(...)
+            Snacks.debug.inspect(...)
+          end
+          _G.bt = function()
+            Snacks.debug.backtrace()
+          end
+          vim.print = _G.dd -- Override print to use snacks for `:=` command
+
+          -- Create some toggle mappings
+          Snacks.toggle.option('spell', { name = 'Spelling' }):map '<leader>us'
+          Snacks.toggle.option('wrap', { name = 'Wrap' }):map '<leader>uw'
+          Snacks.toggle.option('relativenumber', { name = 'Relative Number' }):map '<leader>uL'
+          Snacks.toggle.diagnostics():map '<leader>ud'
+          Snacks.toggle.line_number():map '<leader>ul'
+          Snacks.toggle.option('conceallevel', { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map '<leader>uc'
+          Snacks.toggle.treesitter():map '<leader>uT'
+          Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
+          Snacks.toggle.inlay_hints():map '<leader>uh'
+          Snacks.toggle.indent():map '<leader>ug'
+          Snacks.toggle.dim():map '<leader>uD'
+        end,
+      })
     end,
   },
   {
@@ -1165,6 +1395,9 @@ vim.cmd.colorscheme 'solarized-osaka'
 vim.api.nvim_set_keymap('n', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 
+vim.api.nvim_set_keymap('n', '<c-k>', '<cmd> LspStop<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<c-k>', '<cmd> LspStop<cr>', { noremap = true, silent = true })
+
 vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
 
@@ -1227,7 +1460,15 @@ end, { desc = 'Open harpoon window' })
 require('lsp-format').setup {}
 require('lspconfig').gopls.setup { on_attach = require('lsp-format').on_attach }
 -- R
--- require('lspconfig').r_language_server.setup { on_attach = require('lsp-format').on_attach }
+-- require('lspconfig').r_language_server.setup {
+--   -- on_attach = require('lsp-format').on_attach,
+--   on_init = function(client, _)
+--     client.server_capabilities.semanticTokensProvider = nil -- turn off semantic tokens
+--   end,
+--   init_options = {
+--     provideFormatter = false,
+--   },
+-- }
 -- lua
 require('lspconfig').lua_ls.setup { on_attach = require('lsp-format').on_attach }
 -- python
