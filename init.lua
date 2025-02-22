@@ -1369,7 +1369,9 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>1', ":lua require('ufo').closeFoldsWith(0)<cr>", { desc = '1st Lvl Close Fold' })
       vim.keymap.set('n', '<leader>2', ":lua require('ufo').closeFoldsWith(1)<cr>", { desc = '2nd Lvl Close Fold' })
       vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
+      vim.keymap.set('n', '<leader>a', 'zO')
       vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
+      vim.keymap.set('n', '<leader>b', require('ufo').closeAllFolds)
 
       vim.api.nvim_create_autocmd({ 'WinNew' }, {
         group = vim.api.nvim_create_augroup('Fold', { clear = true }),
@@ -1431,6 +1433,39 @@ require('lazy').setup({
       }
     end,
   },
+
+  {
+    'frankroeder/parrot.nvim',
+    dependencies = { 'ibhagwan/fzf-lua', 'nvim-lua/plenary.nvim' },
+    -- optionally include "rcarriga/nvim-notify" for beautiful notifications
+    config = function()
+      require('parrot').setup {
+        -- Providers must be explicitly added to make them available.
+        providers = {
+          anthropic = {
+            -- api_key = os.getenv 'ANTHROPIC_API_KEY',
+            endpoint = 'https://api.anthropic.com/v1/messages',
+            topic_prompt = 'You only respond with 3 to 4 words to summarize the past conversation.',
+            -- usually a cheap and fast model to generate the chat topic based on
+            -- the whole chat history
+            topic = {
+              model = 'claude-3-haiku-20240307',
+              params = { max_tokens = 32 },
+            },
+            -- default parameters for the actual model
+            params = {
+              chat = { max_tokens = 4096 },
+              command = { max_tokens = 4096 },
+            },
+          },
+          mistral = {
+          },
+          openai = {
+          },
+        },
+      }
+    end,
+  },
   -- The following two comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -1481,17 +1516,20 @@ vim.cmd.colorscheme 'solarized-osaka'
 vim.api.nvim_set_keymap('n', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 
-vim.api.nvim_set_keymap('n', '<c-k>', '<cmd> LspStop<cr>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<c-k>', '<cmd> LspStop<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<c-k>', '<cmd>LspStop<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<c-k>', '<cmd>LspStop<cr>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_set_keymap('n', '<C-x>', '<cmd>lua require("telescope.builtin").buffers()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-x>', '<cmd>lua require("telescope.builtin").buffers()<CR>', { noremap = true, silent = true })
 
 local harpoon = require 'harpoon'
 
 harpoon:setup()
 
-vim.keymap.set('n', '<leader>a', function()
+vim.keymap.set('n', 'C-a', function()
   harpoon:list():add()
 end)
 vim.keymap.set('n', '<C-e>', function()
@@ -1570,4 +1608,5 @@ vim.diagnostic.config {
   severity_sort = true,
 }
 
+require 'custom.plugins.go_debug'
 require 'custom.plugins.go_debug'
