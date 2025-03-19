@@ -1522,8 +1522,8 @@ vim.api.nvim_set_keymap('i', '<c-k>', '<cmd>LspStop<cr>', { noremap = true, sile
 vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
 
-vim.api.nvim_set_keymap('n', '<C-x>', '<cmd>lua require("telescope.builtin").buffers()<CR>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<C-x>', '<cmd>lua require("telescope.builtin").buffers()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<C-y>', '<cmd>lua require("telescope.builtin").buffers()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<C-y>', '<cmd>lua require("telescope.builtin").buffers()<CR>', { noremap = true, silent = true })
 
 local harpoon = require 'harpoon'
 
