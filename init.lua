@@ -734,7 +734,7 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = { c = true, cpp = true, r = true }
         return {
           timeout_ms = 500,
           lsp_fallback = not disable_filetypes[vim.bo[bufnr].filetype],
@@ -819,7 +819,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<C-Tab>'] = cmp.mapping.confirm { select = true },
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
@@ -1360,7 +1360,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>1', ":lua require('ufo').closeFoldsWith(0)<cr>", { desc = '1st Lvl Close Fold' })
       vim.keymap.set('n', '<leader>2', ":lua require('ufo').closeFoldsWith(1)<cr>", { desc = '2nd Lvl Close Fold' })
       vim.keymap.set('n', 'zR', require('ufo').openAllFolds)
-      vim.keymap.set('n', '<leader>a', 'zO')
+      vim.keymap.set('n', '<leader>B', 'zO')
       vim.keymap.set('n', 'zM', require('ufo').closeAllFolds)
       vim.keymap.set('n', '<leader>b', require('ufo').closeAllFolds)
 
@@ -1451,7 +1451,7 @@ require('lazy').setup({
     opts = {
       -- add any opts here
       -- for example
-      provider = 'openai',
+      provider = 'claude',
       providers = {
         openai = {
           endpoint = 'https://api.openai.com/v1',
@@ -1468,6 +1468,9 @@ require('lazy').setup({
           model = 'claude-sonnet-4-20250514',
           timeout = 30000, -- Timeout in milliseconds
           -- disable_tools = true, -- disable tools!
+          {
+            disabled_tools = { 'python' },
+          },
           extra_request_body = {
             temperature = 0,
             max_tokens = 4096,
@@ -1530,7 +1533,7 @@ require('lazy').setup({
             name = 'anthropic',
             endpoint = 'https://api.anthropic.com/v1/messages',
             model_endpoint = 'https://api.anthropic.com/v1/models',
-            api_key = '',
+            api_key = os.getenv 'ANTHROPIC_API_KEY',
             params = {
               chat = { max_tokens = 4096 },
               command = { max_tokens = 4096 },
@@ -1714,8 +1717,8 @@ vim.cmd.colorscheme 'solarized-osaka'
 vim.api.nvim_set_keymap('n', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<c-p>', '<cmd>Telescope find_files<cr>', { noremap = true, silent = true })
 
-vim.api.nvim_set_keymap('n', '<c-k>', '<cmd>LspStop r-language-server<cr>', { noremap = true, silent = true })
-vim.api.nvim_set_keymap('i', '<c-k>', '<cmd>LspStop r-language-server<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<c-k>', '<cmd>LspStop r_language_server<cr>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('i', '<c-k>', '<cmd>LspStop r_language_server<cr>', { noremap = true, silent = true })
 
 vim.api.nvim_set_keymap('n', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<C-f>', '<cmd>lua require("telescope.builtin").live_grep()<CR>', { noremap = true, silent = true })
