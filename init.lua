@@ -1522,6 +1522,18 @@ require('lazy').setup({
     },
   },
   {
+    'mfussenegger/nvim-dap',
+    dependencies = {
+      -- UI pour nvim-dap (fenêtres pour variables, pile d'appels, etc.)
+      {
+        'rcarriga/nvim-dap-ui',
+        opts = {}, -- Utilise la configuration par défaut
+      },
+      -- (Optionnel) Ajoute des icônes de debug dans la gutter
+      { 'theHamsta/nvim-dap-virtual-text' },
+    },
+  },
+  {
     'frankroeder/parrot.nvim',
     dependencies = { 'ibhagwan/fzf-lua', 'nvim-lua/plenary.nvim' },
     -- optionally include "rcarriga/nvim-notify" for beautiful notifications
@@ -1795,18 +1807,84 @@ require('lspconfig').gopls.setup { on_attach = require('lsp-format').on_attach }
 --   },
 -- }
 -- lua
-require('lspconfig').lua_ls.setup { on_attach = require('lsp-format').on_attach }
+-- require('lspconfig').lua_ls.setup { on_attach = require('lsp-format').on_attach }
 -- python
-require('lspconfig').pyright.setup { on_attach = require('lsp-format').on_attach }
+-- require('lspconfig').pyright.setup { on_attach = require('lsp-format').on_attach }
 -- c++
-require('lspconfig').clangd.setup { on_attach = require('lsp-format').on_attach }
+-- require('lspconfig').clangd.setup { on_attach = require('lsp-format').on_attach }
 
--- The line beneath this is called `modeline`. See `:help modeline`
--- vim: ts=2 sts=2 sw=2 et
---
 vim.diagnostic.config {
   underline = false,
   severity_sort = true,
 }
 
--- require 'custom.plugins.go_debug'
+local dap = require 'dap'
+dap.adapters.delve = {
+  type = 'server',
+  port = '${port}',
+  executable = {
+    command = 'dlv',
+    -- 'debug' est pour les binaires, 'test' pour les tests
+    args = { 'dap', '-l', '127.0.0.1:${port}' },
+  },
+}
+
+dap.configurations.go = {
+  {
+    type = 'delve',
+    name = 'Debug (Lance le fichier actuel)',
+    request = 'launch',
+    program = '${file}', -- Lance le fichier que vous avez ouvert
+  },
+  {
+    type = 'delve',
+    name = 'Debug test (Lance la fonction de test)',
+    request = 'launch',
+    mode = 'test', -- Mode spécial pour les tests
+    program = '${file}',
+    args = { '-test.v', '-test.run', '^${selectedlWord}$' }, -- Lance le test sous le curseur
+  },
+  {
+    type = 'delve',
+    name = 'Debug package (Lance les tests du package)',
+    request = 'launch',
+    mode = 'test',
+    program = '${fileDirname}', -- Lance tous les tests dans le dossier du fichier
+  },
+}
+
+require('dapui').setup()
+
+-- (Optionnel) Ouvre/Ferme l'UI automatiquement au début/fin du debug
+dap.listeners.after.event_initialized['dapui_config'] = function()
+  require('dapui').open()
+end
+dap.listeners.before.event_terminated['dapui_config'] = function()
+  require('dapui').close()
+end
+dap.listeners.before.event_exited['dapui_config'] = function()
+  require('dapui').close()
+end
+
+local keymap = vim.keymap.set
+local dap = require 'dap'
+local dapui = require 'dapui'
+
+-- Met/Enlève un point d'arrêt sur la ligne actuelle
+keymap('n', '<F5>', dap.toggle_breakpoint)
+
+-- Lance le débogage (ouvre un menu pour choisir la configuration "Launch")
+keymap('n', '<F9>', dap.continue)
+-- ou dap.run_last() pour relancer la dernière session
+
+-- Ouvre/Ferme l'interface utilisateur
+keymap('n', '<F7>', dapui.toggle)
+
+-- Navigation
+keymap('n', '<F10>', dap.step_over) -- Pas à pas (sans entrer dans les fonctions)
+keymap('n', '<F11>', dap.step_into) -- Pas à pas (en entrant dans les fonctions)
+keymap('n', '<F12>', dap.step_out) -- Sortir de la fonction actuelle
+
+-- The line beneath this is called `modeline`. See `:help modeline`
+-- vim: ts=2 sts=2 sw=2 et
+--
