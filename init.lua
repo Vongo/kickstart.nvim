@@ -1795,7 +1795,7 @@ end, { desc = 'Open harpoon window' })
 
 -- lsp-format
 require('lsp-format').setup {}
-require('lspconfig').gopls.setup { on_attach = require('lsp-format').on_attach }
+-- require('lspconfig').gopls.setup { on_attach = require('lsp-format').on_attach }
 -- R
 -- require('lspconfig').r_language_server.setup {
 --   -- on_attach = require('lsp-format').on_attach,
@@ -1874,16 +1874,50 @@ local dapui = require 'dapui'
 keymap('n', '<F5>', dap.toggle_breakpoint)
 
 -- Lance le débogage (ouvre un menu pour choisir la configuration "Launch")
-keymap('n', '<F9>', dap.continue)
+keymap('n', '<F6>', dap.continue)
 -- ou dap.run_last() pour relancer la dernière session
 
 -- Ouvre/Ferme l'interface utilisateur
-keymap('n', '<F7>', dapui.toggle)
+keymap('n', '<F4>', dapui.toggle)
 
 -- Navigation
-keymap('n', '<F10>', dap.step_over) -- Pas à pas (sans entrer dans les fonctions)
-keymap('n', '<F11>', dap.step_into) -- Pas à pas (en entrant dans les fonctions)
-keymap('n', '<F12>', dap.step_out) -- Sortir de la fonction actuelle
+keymap('n', '<F7>', dap.step_over) -- Pas à pas (sans entrer dans les fonctions)
+keymap('n', '<F8>', dap.step_into) -- Pas à pas (en entrant dans les fonctions)
+keymap('n', '<F9>', dap.step_out) -- Sortir de la fonction actuelle
+
+local function go_launch_with_dynamic_args()
+  local dap = require 'dap'
+
+  -- 1. Demande les arguments à l'utilisateur via une prompt Vim
+  -- Ex: --host 127.0.0.1 --port 8080
+  local args_input = vim.fn.input 'Arguments pour Go (ex: --env prod --port 8080) : '
+
+  -- 2. Convertit la chaîne d'arguments en tableau (format requis par DAP)
+  local args_table = {}
+  -- %S+ signifie une ou plusieurs séquences de caractères non-blancs
+  for arg in string.gmatch(args_input, '%S+') do
+    table.insert(args_table, arg)
+  end
+
+  -- 3. Définit la configuration de lancement temporaire (ad-hoc)
+  local config = {
+    type = 'delve',
+    name = 'Go Debug Dynamic Args',
+    request = 'launch',
+    program = vim.fn.expand '%:p:h',
+    args = args_table,
+    stopOnEntry = false,
+
+    -- AJOUT CRUCIAL : Définit le répertoire de travail
+    cwd = vim.fn.expand '%:p:h',
+  }
+
+  -- 4. Lance le débogueur
+  dap.run(config)
+end
+
+-- 5. Crée la commande Vim accessible dans Neovim
+vim.api.nvim_create_user_command('GoDebugArgs', go_launch_with_dynamic_args, { nargs = 0, desc = 'Lance le débogueur Go en demandant les arguments' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
