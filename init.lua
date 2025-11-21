@@ -1823,7 +1823,8 @@ dap.adapters.delve = {
   type = 'server',
   port = '${port}',
   executable = {
-    command = 'dlv',
+    -- command = 'dlv',
+    command = vim.fn.expand '$HOME/go/bin/dlv',
     -- 'debug' est pour les binaires, 'test' pour les tests
     args = { 'dap', '-l', '127.0.0.1:${port}' },
   },
@@ -1907,9 +1908,10 @@ local function go_launch_with_dynamic_args()
     program = vim.fn.expand '%:p:h',
     args = args_table,
     stopOnEntry = false,
-
-    -- AJOUT CRUCIAL : Définit le répertoire de travail
-    cwd = vim.fn.expand '%:p:h',
+    -- buildFlags = '-gcflags=all=-N -l',
+    -- cwd = vim.fn.expand '%:p:h',
+    cwd = vim.fn.getcwd(),
+    output = './__debug_bin',
   }
 
   -- 4. Lance le débogueur
